@@ -45,18 +45,40 @@ void replenish_ingredients();
 void change_coffee_prices();
 void collect_earnings();
 void display_earnings_and_ingredients();
+int coffee_selection();
 
-int main() {
-    while (1) {
-        if (coffee_selection() == EXIT) {
-            break;
+int main() 
+{
+    int main_menu_choice;
+
+    while (1) 
+    {
+        printf("\nMain Menu:\n");
+        printf("1. Order a coffee type\n");
+        printf("2. Admin mode for the coffee maker operator\n");
+        printf("3. End the application execution\n");
+        printf("Choose an option: ");
+        scanf("%d", &main_menu_choice);
+
+        switch (main_menu_choice) 
+        {
+            case 1:
+                coffee_selection();
+                break;
+            case 2:
+                admin_mode();
+                break;
+            case 3:
+                printf("Thank you for using the coffee machine!\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please try again.\n");
         }
     }
-    printf("Thank you for using the coffee machine!\n");
-    return 0;
 }
 
-int coffee_selection() {
+int coffee_selection() 
+{
     int customer_button;
     char confirm;
 
@@ -65,17 +87,15 @@ int coffee_selection() {
     printf("Enter 2 for Cappuccino   %.1f AED\n", price_cappuccino);
     printf("Enter 3 for Mocha        %.1f AED\n", price_mocha);
     printf("Enter 4 to Exit\n");
-    printf("Enter 5 for Admin Mode\n");
     scanf("%d", &customer_button);
 
-    if (customer_button == ADMIN_MODE) {
-        admin_mode();
-        return 0;
-    } else if (customer_button == EXIT) {
+    if (customer_button == EXIT) 
+    {
         return EXIT;
     }
 
-    if (customer_button < 1 || customer_button > 3) {
+    if (customer_button < 1 || customer_button > 3) 
+    {
         printf("Invalid selection. Please choose a valid coffee option.\n");
         return 0;
     }
@@ -83,7 +103,8 @@ int coffee_selection() {
     printf("Confirm your selection (y/n): ");
     scanf(" %c", &confirm);
 
-    if (confirm == 'n' || confirm == 'N') {
+    if (confirm == 'n' || confirm == 'N') 
+    {
         printf("Returning to coffee selection...\n\n");
         return 0;
     }
@@ -92,42 +113,59 @@ int coffee_selection() {
                    (customer_button == CAPPUCCINO) ? price_cappuccino :
                    price_mocha;
 
-    if (check_ingredients(customer_button)) {
-        if (customer_button == ESPRESSO) {
+    if (check_ingredients(customer_button)) 
+    {
+        if (customer_button == ESPRESSO) 
+        {
             current_coffee_beans -= COFFEE_BEANS;
             current_water_ml -= WATER_ML_ESPRESSO;
-        } else if (customer_button == CAPPUCCINO) {
+        } 
+        else if (customer_button == CAPPUCCINO) 
+        {
             current_coffee_beans -= COFFEE_BEANS;
             current_water_ml -= WATER_ML_CAPPUCCINO;
             current_milk_ml -= MILK_ML_CAPPUCCINO;
-        } else if (customer_button == MOCHA) {
+        } 
+        else if (customer_button == MOCHA) 
+        {
             current_coffee_beans -= COFFEE_BEANS;
             current_water_ml -= WATER_ML_MOCHA;
             current_milk_ml -= MILK_ML_MOCHA;
             current_chocolate_syrup_ml -= CHOCOLATE_SYRUP_ML_MOCHA;
         }
 
-        if (process_payment(price)) {
+        if (process_payment(price)) 
+        {
             total_earnings += price;
             printf("Thank you! Your coffee is being prepared.\n");
-        } else {
+        } 
+        else 
+        {
             printf("Payment unsuccessful. Returning to coffee selection...\n");
         }
-    } else {
+    } 
+    else 
+    {
         printf("Not enough ingredients. Returning to coffee selection...\n");
     }
 
     return 0;
 }
 
-bool check_ingredients(int coffee_type) {
-    if (coffee_type == ESPRESSO) {
+bool check_ingredients(int coffee_type) 
+{
+    if (coffee_type == ESPRESSO) 
+    {
         return (current_coffee_beans >= COFFEE_BEANS && current_water_ml >= WATER_ML_ESPRESSO);
-    } else if (coffee_type == CAPPUCCINO) {
+    } 
+    else if (coffee_type == CAPPUCCINO) 
+    {
         return (current_coffee_beans >= COFFEE_BEANS &&
                 current_water_ml >= WATER_ML_CAPPUCCINO &&
                 current_milk_ml >= MILK_ML_CAPPUCCINO);
-    } else if (coffee_type == MOCHA) {
+    } 
+    else if (coffee_type == MOCHA) 
+    {
         return (current_coffee_beans >= COFFEE_BEANS &&
                 current_water_ml >= WATER_ML_MOCHA &&
                 current_milk_ml >= MILK_ML_MOCHA &&
@@ -136,20 +174,25 @@ bool check_ingredients(int coffee_type) {
     return false;
 }
 
-bool process_payment(double price) {
+bool process_payment(double price) 
+{
     double total_paid = 0.0;
     double coin;
 
     printf("Enter coins (1.0 or 0.5 AED) to pay %.2f AED:\n", price);
 
-    while (total_paid < price) {
+    while (total_paid < price) 
+    {
         printf("Enter coin: ");
         scanf("%lf", &coin);
 
-        if (coin == 1.0 || coin == 0.5) {
+        if (coin == 1.0 || coin == 0.5) 
+        {
             total_paid += coin;
             printf("Total paid: %.1f AED\n", total_paid);
-        } else {
+        } 
+        else 
+        {
             printf("Invalid coin. Use 1.0 or 0.5 AED.\n");
         }
     }
@@ -157,15 +200,18 @@ bool process_payment(double price) {
     return true;
 }
 
-void admin_mode() {
+void admin_mode() 
+{
     int password;
 
     printf("Enter admin password: ");
     scanf("%d", &password);
 
-    if (password == 1234) {
+    if (password == 1234) 
+    {
         int choice;
-        do {
+        do 
+        {
             printf("\nAdmin Menu:\n");
             printf("1. Display earnings and ingredients\n");
             printf("2. Replenish ingredients\n");
@@ -174,22 +220,32 @@ void admin_mode() {
             printf("Choose an option: ");
             scanf("%d", &choice);
 
-            if (choice == 1) {
+            if (choice == 1) 
+            {
                 display_earnings_and_ingredients();
-            } else if (choice == 2) {
+            } 
+            else if (choice == 2) 
+            {
                 replenish_ingredients();
-            } else if (choice == 3) {
+            } 
+            else if (choice == 3) 
+            {
                 change_coffee_prices();
-            } else if (choice != 4) {
+            } 
+            else if (choice != 4) 
+            {
                 printf("Invalid choice. Try again.\n");
             }
         } while (choice != 4);
-    } else {
-        printf("Incorrect password. Returning to coffee selection...\n");
+    } 
+    else 
+    {
+        printf("Incorrect password. Returning to main menu...\n");
     }
 }
 
-void replenish_ingredients() {
+void replenish_ingredients() 
+{
     int added_beans = 50 + rand() % 51;
     int added_water = 300 + rand() % 201;
     int added_milk = 300 + rand() % 201;
@@ -200,14 +256,16 @@ void replenish_ingredients() {
     current_milk_ml += added_milk;
     current_chocolate_syrup_ml += added_syrup;
 
-    printf("Ingredients replenished:\n");
+    printf("Ingredients replenished.\n");
+    printf("Updated Ingredient Levels:\n");
     printf("Coffee beans: %d g\n", current_coffee_beans);
     printf("Water: %d ml\n", current_water_ml);
     printf("Milk: %d ml\n", current_milk_ml);
     printf("Chocolate syrup: %d ml\n", current_chocolate_syrup_ml);
 }
 
-void change_coffee_prices() {
+void change_coffee_prices() 
+{
     printf("Enter new price for Espresso: ");
     scanf("%lf", &price_espresso);
     printf("Enter new price for Cappuccino: ");
@@ -217,7 +275,8 @@ void change_coffee_prices() {
     printf("Prices updated successfully.\n");
 }
 
-void display_earnings_and_ingredients() {
+void display_earnings_and_ingredients() 
+{
     printf("\nIngredients:\n");
     printf("Coffee beans: %d g\n", current_coffee_beans);
     printf("Water: %d ml\n", current_water_ml);
@@ -229,14 +288,14 @@ void display_earnings_and_ingredients() {
     printf("Collect earnings? (y/n): ");
     scanf(" %c", &collect);
 
-    if (collect == 'y' || collect == 'Y') {
+    if (collect == 'y' || collect == 'Y') 
+    {
         collect_earnings();
-    } else {
-        printf("Earnings not collected.\n");
     }
 }
 
-void collect_earnings() {
-    printf("Collected %.2f AED\n", total_earnings);
+void collect_earnings() 
+{
+    printf("Collected %.1f AED\nResetting earnings to 0\nRemember to collect earnings\n", total_earnings);
     total_earnings = 0.0;
 }
