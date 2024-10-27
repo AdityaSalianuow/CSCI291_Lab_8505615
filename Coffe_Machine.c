@@ -1,7 +1,9 @@
+//all relevant libraries used//
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
+//all #define statements//
 #define ESPRESSO 1
 #define CAPPUCCINO 2
 #define MOCHA 3
@@ -28,16 +30,17 @@
 #define DEFAULT_PRICE_CAPPUCCINO 4.5
 #define DEFAULT_PRICE_MOCHA 5.5
 
+//variables used in the code below//
 int current_coffee_beans = INITIAL_COFFEE_BEANS;
 int current_water_ml = INITIAL_WATER_ML;
 int current_milk_ml = INITIAL_MILK_ML;
 int current_chocolate_syrup_ml = INITIAL_SYRUP_ML;
-
 double total_earnings = 0.0;
 double price_espresso = DEFAULT_PRICE_ESPRESSO;
 double price_cappuccino = DEFAULT_PRICE_CAPPUCCINO;
 double price_mocha = DEFAULT_PRICE_MOCHA;
 
+//function prototypes//
 bool check_ingredients(int coffee_type);
 bool process_payment(double price);
 void admin_mode();
@@ -47,10 +50,12 @@ void collect_earnings();
 void display_earnings_and_ingredients();
 int coffee_selection();
 
+//main function//
 int main() 
 {
     int main_menu_choice;
 
+    //while loop for the main menu//
     while (1) 
     {
         printf("\nMain Menu:\n");
@@ -60,6 +65,7 @@ int main()
         printf("Choose an option: ");
         scanf("%d", &main_menu_choice);
 
+        //switch for the 3 options and a default for invalid choice option//
         switch (main_menu_choice) 
         {
             case 1:
@@ -77,11 +83,13 @@ int main()
     }
 }
 
+//defined coffee selection function//
 int coffee_selection() 
 {
     int customer_button;
     char confirm;
 
+    //printf statements displaying the options, scanf statement to read the user's input//
     printf("\nChoose a coffee\n");
     printf("Enter 1 for Espresso     %.1f AED\n", price_espresso);
     printf("Enter 2 for Cappuccino   %.1f AED\n", price_cappuccino);
@@ -89,30 +97,50 @@ int coffee_selection()
     printf("Enter 4 to Exit\n");
     scanf("%d", &customer_button);
 
+    //if statement for if the user prompts the program to exit the coffee selection menu//
     if (customer_button == EXIT) 
     {
         return EXIT;
     }
 
+    //if statement for if the user chooses a number below 1 or above 3 resulting in an error//
     if (customer_button < 1 || customer_button > 3) 
     {
         printf("Invalid selection. Please choose a valid coffee option.\n");
         return 0;
     }
 
+    //print message for confirmation of order and scan the user input//
     printf("Confirm your selection (y/n): ");
     scanf(" %c", &confirm);
 
-    if (confirm == 'n' || confirm == 'N') 
-    {
-        printf("Returning to coffee selection...\n\n");
-        return 0;
-    }
+    
+  /*do while loop in which it prompts the user to confirm their order, it only allows inpupts of 'y' or 'n' as yes or no
+  otherwise the program prompts the user whether they'd like to confirm their order again, yes continues the program and
+  no takes the user back to the coffee selection*/
+    do {
+        printf("Confirm your selection (y/n): ");
+        scanf(" %c", &confirm);
 
+        if (confirm != 'y' && confirm != 'Y') 
+        {
+            printf("Invalid input. Would you like to confirm your order again? (y/n): ");
+            scanf(" %c", &confirm);
+            if (confirm == 'n' || confirm == 'N') 
+            {
+                printf("Returning to coffee selection...\n\n");
+                return 0;
+            }
+        }
+    } while (confirm != 'y' && confirm != 'Y');
+
+    //Assigning value to variable price using ternary conditonal operator ? to set the price of the coffee to the correct price//
     double price = (customer_button == ESPRESSO) ? price_espresso :
                    (customer_button == CAPPUCCINO) ? price_cappuccino :
                    price_mocha;
 
+    /*if and else ifs to check the number of ingredients and whether there is enough of each ingredient using below boolean, prints 
+    relevant insuffecient ingredients message if ingredients are not enough*/
     if (check_ingredients(customer_button)) 
     {
         if (customer_button == ESPRESSO) 
@@ -133,7 +161,7 @@ int coffee_selection()
             current_milk_ml -= MILK_ML_MOCHA;
             current_chocolate_syrup_ml -= CHOCOLATE_SYRUP_ML_MOCHA;
         }
-
+        //if else statement to save the total earnings//
         if (process_payment(price)) 
         {
             total_earnings += price;
@@ -152,6 +180,7 @@ int coffee_selection()
     return 0;
 }
 
+//boolean function using if else statements to check the ingredients//
 bool check_ingredients(int coffee_type) 
 {
     if (coffee_type == ESPRESSO) 
@@ -174,6 +203,7 @@ bool check_ingredients(int coffee_type)
     return false;
 }
 
+//boolean function using while loop with nested if loop for payment of 1.0 and 0.5 AED coins only//
 bool process_payment(double price) 
 {
     double total_paid = 0.0;
@@ -200,15 +230,17 @@ bool process_payment(double price)
     return true;
 }
 
+//Admin mode function//
 void admin_mode() 
 {
     int password;
-
+    //Prints and scans for admin password//
     printf("Enter admin password: ");
     scanf("%d", &password);
-
+    //Used if statement to set the password//
     if (password == 1234) 
     {
+        //Unlocks admin mode features after password is enterred, calls all other relevant admin mode functions//
         int choice;
         do 
         {
@@ -244,8 +276,10 @@ void admin_mode()
     }
 }
 
+/*Function uses rand to replenish ingredients a random amount within set bounds, 50 - 100 for coffee beans, 300ml - 500ml for milk
+and water, 100ml - 200ml of chocolate syrup*/
 void replenish_ingredients() 
-{
+{   
     int added_beans = 50 + rand() % 51;
     int added_water = 300 + rand() % 201;
     int added_milk = 300 + rand() % 201;
@@ -264,6 +298,7 @@ void replenish_ingredients()
     printf("Chocolate syrup: %d ml\n", current_chocolate_syrup_ml);
 }
 
+//function to change coffee price for admin, uses basic printf and scanf to save new prices in price variables//
 void change_coffee_prices() 
 {
     printf("Enter new price for Espresso: ");
@@ -275,6 +310,7 @@ void change_coffee_prices()
     printf("Prices updated successfully.\n");
 }
 
+//function to view earnings and ingredients, uses printf to display//
 void display_earnings_and_ingredients() 
 {
     printf("\nIngredients:\n");
@@ -284,6 +320,7 @@ void display_earnings_and_ingredients()
     printf("Chocolate syrup: %d ml\n", current_chocolate_syrup_ml);
     printf("Total earnings: %.2f AED\n", total_earnings);
 
+//collection of earnings, printf and scanf used to confirm collection of earnings and then function collect_earnings() is called//
     char collect;
     printf("Collect earnings? (y/n): ");
     scanf(" %c", &collect);
@@ -294,6 +331,7 @@ void display_earnings_and_ingredients()
     }
 }
 
+//function to collect earnings, print relevant message and reset total earnings to 0//
 void collect_earnings() 
 {
     printf("Collected %.1f AED\nResetting earnings to 0\nRemember to collect earnings\n", total_earnings);
